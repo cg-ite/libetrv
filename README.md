@@ -1,3 +1,10 @@
+# Why this fork?
+I have a HA core installation on a rpi3 with a dietpi distro and 3 Danfoss thermostats. 
+During the installation of etrv2mqtt with uv I got an error msg that bluepy couln't
+get build. After some search I discovered, that bluepy is not compatible with python > 3.7 
+and not activly maintained. But there is bluepy3 a modern drop in for bluepy.
+So I try to see if libetrv works with bluepy3 and can installed with uv.
+
 # libetrv
 
 
