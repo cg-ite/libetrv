@@ -14,7 +14,7 @@ setup(
     url='https://github.com/AdamStrojek/libetrv',
     download_url='https://github.com/AdamStrojek/libetrv/archive/v0.4.1.tar.gz',
     keywords=['danfoss', 'etrv', 'libetrv'],
-    install_requires=['fire', 'bluepy', 'xxtea', 'loguru', 'cstruct'],
+    install_requires=['fire', 'bluepy3', 'xxtea', 'loguru', 'cstruct'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
