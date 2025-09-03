@@ -9,7 +9,7 @@ class BatteryData(eTRVSingleData):
     battery = eTRVField(read_only=True)
     class Meta:
         structure = {
-            0x10: """
+            0x0f: """
                 unsigned char battery;
             """,
         }
@@ -23,7 +23,7 @@ class PinSettingsData(eTRVData):
 
     class Meta:
         structure = {
-            0x27: """
+            0x26: """
                 unsigned int pin_number;
                 unsigned char pin_enabled;
                 unsigned char padding[3];
@@ -62,7 +62,7 @@ class SettingsData(eTRVData):
 
     class Meta:
         structure = {
-            0x2a: """
+            0x29: """
                 unsigned char config_bits;
                 unsigned char temperature_min;
                 unsigned char temperature_max;
@@ -82,7 +82,7 @@ class TemperatureData(eTRVData):
 
     class Meta:
         structure = {
-            0x2d: """
+            0x2c: """
                 unsigned char set_point_temperature;
                 unsigned char room_temperature;
                 unsigned char padding[6];
@@ -95,7 +95,7 @@ class NameData(eTRVSingleData):
 
     class Meta:
         structure = {
-            0x30: """
+            0x2f: """
                 char name[16];
             """
         }
@@ -107,7 +107,7 @@ class CurrentTimeData(eTRVSingleData):
 
     class Meta:
         structure = {
-            0x36: """
+            0x35: """
                 int time_local;
                 int time_offset;
             """
@@ -120,7 +120,7 @@ class SecretKeyData(eTRVSingleData):
 
     class Meta:
         structure = {
-            0x3f: """
+            0x3e: """
                 char key[16];
             """
         }

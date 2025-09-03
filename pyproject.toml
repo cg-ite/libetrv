@@ -1,0 +1,13 @@
+[project]
+name = "libetrv"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = [
+    "bleak==1.0.1",
+    "cstruct==6.1",
+    "fire==0.7.0",
+    "loguru==0.5.3",
+    "pytest==4.4.1",
+    "xxtea==3.3.0",
+]

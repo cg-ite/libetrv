@@ -1,3 +1,4 @@
+import asyncio
 import time
 import fire
 from libetrv.device import eTRVDevice
@@ -17,12 +18,12 @@ class CLI:
         else:
             self._secret = None
 
-    def scan(self, timeout=10.):
+    async def scan(self, timeout=10.0):
         print("Detected eTRV devices:")
-        for device, key in eTRVDevice.scan(timeout):
-            key_str = key if key is not None else "-"
-            print("{}, RSSI={}dB, key={}".format(device.addr, device.rssi, key_str))
-    
+        async for device, key in eTRVDevice.scan(timeout):
+            key_str = key.hex() if key else "-"
+            print("{}, RSSI={}dB, key={}".format(device.address, device.rssi, key_str))
+
     def device(self, device_id):
         return Device(device_id, self._pin, self._secret)
 
@@ -33,19 +34,25 @@ class Device:
         self._secret = secret
         self._device = eTRVDevice(device, pin=self._pin, secret=self._secret)
 
-    def get_handler(self, uuid):
-        self._device.connect(False)
-        ch = self._device.ble_device.getCharacteristics(uuid=uuid)[0]
-        print("Handler: 0x{:02X}".format(ch.getHandle()))
+    async def get_handler(self, uuid):
+        await self._device.connect(False)
+        services = await self._device.client.get_services()
+        for service in services:
+            for char in service.characteristics:
+                if str(char.uuid).lower() == str(uuid).lower():
+                    print("Handler: 0x{:02X}".format(char.handle))
+                    return
+        print("UUID not found.")
 
-    def retrieve_key(self):
+    async def retrieve_key(self):
         print(
             "In 5 seconds this script will try to retrieve a secure key from eTRV device. "
             "Don't forget to save it for later. Before that be sure that device is in pairing mode. "
             "You can achieve that by pressing button on device"
         )
-        time.sleep(5)
-        print("Secret Key:", self._device.secret_key)
+        await asyncio.sleep(5)
+        secret = await self._device.secret_key()
+        print("Secret Key:", secret.hex())
 
     def battery(self):
         result = self._device.battery
@@ -75,22 +82,25 @@ class Device:
 
     def current_time(self):
         time_utc = self._device.current_time
-        print("Current time: {}".format(time_to_str(time)))
-        
-    def set_setpoint(self, setpoint):
-        self._device.temperature.set_point_temperature = setpoint
-        
-    def set_pin(self, pin):
-        if pin==0:
-            self._device.pin_settings.pin_number = 0
-            self._device.pin_settings.pin_enabled = False
-            self._device.pin_settings.save()
-        elif pin>0 and pin<=9999:
-            self._device.pin_settings.pin_number = pin
-            self._device.pin_settings.pin_enabled = True
-            self._device.pin_settings.save()
+        print("Current time: {}".format(time_to_str(time_utc)))
+
+    def set_setpoint(self, setpoint: float):
+        temp = self._device.temperature
+        temp.set_point_temperature = setpoint
+        temp.save()
+
+    def set_pin(self, pin: int):
+        settings = self._device.pin_settings
+        if pin == 0:
+            settings.pin_number = 0
+            settings.pin_enabled = False
+        elif 0 < pin <= 9999:
+            settings.pin_number = pin
+            settings.pin_enabled = True
         else:
             print('Invalid pin number')
+            return
+        settings.save()
 
 
 if __name__ == "__main__":

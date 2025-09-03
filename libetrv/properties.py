@@ -1,3 +1,5 @@
+import asyncio
+
 from cstruct import CStructMeta, CStruct, BIG_ENDIAN
 from typing import Optional, Any, Union, Dict
 
@@ -88,7 +90,8 @@ class eTRVData(metaclass=eTRVDataMeta):
         send_pin = getattr(self.Meta, 'send_pin', eTRVData.Meta.send_pin)
         use_encoding = getattr(self.Meta, 'use_encoding', eTRVData.Meta.use_encoding)
         for handler, struct in self.raw_data.items():
-            data = etrv_read_data(self.device, handler, send_pin, use_encoding)
+            data_future = asyncio.run_coroutine_threadsafe(etrv_read_data(self.device, handler, send_pin, use_encoding), asyncio.get_running_loop())
+            data = data_future.result()
             struct.unpack(data)
             struct.is_populated = True
             struct.is_changed = False
@@ -104,7 +107,7 @@ class eTRVData(metaclass=eTRVDataMeta):
 
         for handler, struct in self.raw_data.items():
             data = struct.pack()
-            result = etrv_write_data(self.device, handler, data, send_pin,use_encoding)
+            result = asyncio.get_event_loop().run_until_complete(etrv_write_data(self.device, handler, data, send_pin,use_encoding))
             if result:
                 struct.is_changed = False
             results.append(result)

@@ -1,3 +1,5 @@
+import asyncio
+
 
 class eTRVField:
     def __init__(self, handler=None, name=None, read_only=False, auto_save=False):
@@ -38,7 +40,7 @@ class eTRVField:
             raw_value = setattr(raw_data, self.name, value)
 
         if self.auto_save:
-            data.save()
+            asyncio.run(data.save())
 
     def from_raw_value(self, raw_value, data):
         return raw_value
