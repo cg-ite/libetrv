@@ -5,6 +5,11 @@ get build. After some search I discovered, that bluepy is not compatible with py
 and not activly maintained. But there is bluepy3 a modern drop in for bluepy.
 So I try to see if libetrv works with bluepy3 and can installed with uv.
 
+> [!CAUTION]
+> My tests didn't run so well under Windows 10 and a LogiLink BT00037 (Chipset: CSR/BC8510)
+> I bricked a thermostat during the set_pin() call. Strange. :thinking:
+ 
+
 # libetrv
 
 
