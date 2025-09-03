@@ -9,6 +9,13 @@ So I try to see if libetrv works with bluepy3 and can installed with uv.
 > My tests didn't run so well under Windows 10 and a LogiLink BT00037 (Chipset: CSR/BC8510)
 > I bricked a thermostat during the set_pin() call. Strange. :thinking:
  
+## Links
+Some links to related projects and libs:
+- https://github.com/dsltip/Danfoss-BLE
+- https://github.com/olefriis/Eco2
+- https://github.com/olefriis/Eco2-rust
+- https://github.com/dmitry-cherkas/esphome-danfoss-eco
+- https://bleak.readthedocs.io/en/latest/index.html
 
 # libetrv
 
